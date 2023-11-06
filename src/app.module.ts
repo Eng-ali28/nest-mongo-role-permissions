@@ -1,13 +1,9 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
+import { GlobalExceptionFilters, GlobalInterceptors, GlobalModules } from './common';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost/demo'), UsersModule],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [...GlobalModules],
+    providers: [...GlobalExceptionFilters, ...GlobalInterceptors],
 })
 export class AppModule {}
