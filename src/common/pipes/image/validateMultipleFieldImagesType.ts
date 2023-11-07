@@ -1,7 +1,7 @@
 import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 
 @Injectable()
-export class ValidateMultipleFieldImagesTypePipe implements PipeTransform {
+export default class ValidateMultipleFieldImagesTypePipe implements PipeTransform {
     private whitelist = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp', 'image/gif'];
     constructor(
         private isRequired: boolean,

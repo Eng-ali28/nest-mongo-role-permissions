@@ -13,7 +13,7 @@ export default class ActivateGuard implements CanActivate {
         const req = ctx.switchToHttp().getRequest() as AuthRequest;
 
         if (!req.user.isAdmin) {
-            throw new ForbiddenException("Can't access this route");
+            throw new ForbiddenException("Can't access this route.");
         }
 
         return true;

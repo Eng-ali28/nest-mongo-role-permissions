@@ -3,4 +3,5 @@ export class SendMailOtpDto {
     subject: string;
     name: string;
     otp: number;
+    message: string;
 }

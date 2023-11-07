@@ -8,9 +8,10 @@ import { RefreshTokenStrategy } from './strategy/refreshToken.strategy';
 import { UsersModule } from '../users/users.module';
 import { RefreshTokenModule } from '../refresh token/refreshtoken.module';
 import { CodeModule } from '../code/code.module';
+import { FOLDER_TOKEN } from 'src/common';
 
 @Module({
-    imports: [PassportModule, JwtModule.register({}), UsersModule, RefreshTokenModule, CodeModule],
+    imports: [PassportModule, CodeModule, JwtModule.register({}), UsersModule, RefreshTokenModule, CodeModule],
     controllers: [AuthController],
     providers: [AuthService, AccessTokenStrategey, RefreshTokenStrategy],
 })

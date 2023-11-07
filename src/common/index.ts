@@ -12,8 +12,6 @@ export * from './factory';
 
 export * from './global';
 
-export * from './interceptors';
-
 export * from './pipes';
 
 export * from './util';

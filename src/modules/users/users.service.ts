@@ -6,10 +6,14 @@ import { User } from './schemas/user.schema';
 import { UsersRepository } from './users.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import TimeService from 'src/common/util/time.service';
+import HashService from 'src/common/util/hash.service';
 
 @Injectable()
 export class UsersService {
-    constructor(private readonly usersRepository: UsersRepository) {}
+    constructor(
+        private readonly usersRepository: UsersRepository,
+        private hashService: HashService,
+    ) {}
 
     async getUserById(userId: string): Promise<User> {
         const user = await this.usersRepository.findOne({ _id: userId });
@@ -32,12 +36,16 @@ export class UsersService {
     }
 
     async createUser(createUserDto: CreateUserDto): Promise<User> {
-        return await this.usersRepository.create({
-            createUserDto,
-        });
+        const hashPassword = await this.hashService.hashData(createUserDto.password);
+
+        return await this.usersRepository.create({ ...createUserDto, password: hashPassword });
     }
 
     async updateUser(userId: string, userUpdates: UpdateUserDto): Promise<User> {
-        return await this.usersRepository.findOneAndUpdate({ userId }, userUpdates);
+        return await this.usersRepository.findOneAndUpdate({ _id: userId }, userUpdates);
+    }
+
+    async setUserImage(userId: string, image: string): Promise<User> {
+        return await this.usersRepository.findOneAndUpdate({ _id: userId }, { image });
     }
 }

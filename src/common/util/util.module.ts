@@ -10,6 +10,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import MailService from './mail/mail.service';
+import HashService from './hash.service';
 
 @Global()
 @Module({
@@ -37,7 +38,15 @@ import MailService from './mail/mail.service';
             }),
         }),
     ],
-    providers: [FileDeleteService, WhatsappService, TasksService, TimeService, TranslateException, MailService],
-    exports: [FileDeleteService, WhatsappService, TimeService, TranslateException, MailService],
+    providers: [
+        FileDeleteService,
+        WhatsappService,
+        TasksService,
+        TimeService,
+        TranslateException,
+        MailService,
+        HashService,
+    ],
+    exports: [FileDeleteService, WhatsappService, TimeService, TranslateException, MailService, HashService],
 })
 export default class UtilModule {}

@@ -7,7 +7,7 @@ import { EntityRepository } from 'src/common';
 
 @Injectable()
 export class UsersRepository extends EntityRepository<User> {
-  constructor(@InjectModel(User.name) userModel: Model<User>) {
-    super(userModel);
-  }
+    constructor(@InjectModel(User.name) private userModel: Model<User>) {
+        super(userModel);
+    }
 }

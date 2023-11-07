@@ -1,7 +1,6 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { LoginDto } from './dto/login.dto';
 import { Payload } from './types/payload.types';
-import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { SignUpDto } from './dto/signup.dto';
 
@@ -11,6 +10,8 @@ import { ConfigService } from '@nestjs/config';
 import { RefreshTokenService } from '../refresh token/refreshToken.service';
 import { UsersRepository } from '../users/users.repository';
 import { CodeRepository } from '../code/code.repository';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
+import HashService from 'src/common/util/hash.service';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,7 @@ export class AuthService {
         private readonly codeRepository: CodeRepository,
         private readonly RefreshTokenService: RefreshTokenService,
         private readonly jwtService: JwtService,
+        private readonly hashService: HashService,
         private readonly configService: ConfigService,
     ) {}
 
@@ -33,7 +35,7 @@ export class AuthService {
 
         const user = await this.userRepository.create({
             ...data,
-            password: await this.hashData(password),
+            password: await this.hashService.hashData(password),
         });
 
         const userLeanObject = user.toObject();
@@ -56,13 +58,13 @@ export class AuthService {
     }
 
     async login({ deviceName, ...loginDto }: LoginDto) {
-        let user = await this.userRepository.findOne({ email: loginDto.email });
+        let user = await this.userRepository.findOne({ email: loginDto.email }, { lean: true });
         if (!user) {
             throw new UnauthorizedException('Invalid email or password.');
         }
 
-        if (!(await this.isMatchHashed(user.password, loginDto.password))) {
-            throw new UnauthorizedException('Invalid phone or password.');
+        if (!(await this.hashService.isMatchHashed(user.password, loginDto.password))) {
+            throw new UnauthorizedException('Invalid email or password.');
         }
 
         const payload: Payload = {
@@ -83,68 +85,35 @@ export class AuthService {
         };
     }
 
-    // async verifyUserAccount(): Promise<Record<string, string>> {
-    //   const decode = this.decodeToken(token);
+    async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<Record<string, string>> {
+        const { newPassword, email, otp, deviceName } = forgotPasswordDto;
 
-    //   if (!decode.email) {
-    //     throw new BadRequestException('Invalid confirmation token.');
-    //   }
+        const code = await this.codeRepository.findCodeByEmailAndOtp({ email, otp });
+        if (!code) throw new BadRequestException('Invalid OTP.');
 
-    //   const user = await this.userRepository.getUserByEmail(decode.email);
+        const user = await this.userRepository.findOne({ email });
 
-    //   user.isActive = true;
+        const hashPassword = await this.hashService.hashData(newPassword);
 
-    //   await user.save();
+        user.password = hashPassword;
+        await user.save();
 
-    //   const payload: Payload = {
-    //     userId: user._id,
-    //     deviceName,
-    //   };
+        const payload: Payload = {
+            userId: user._id,
+            isAdmin: user.isAdmin,
+            deviceName,
+        };
 
-    //   const tokens = await this.getTokens(payload);
-    //   await this.updateRefreshToken(user.id, deviceName, tokens.refreshToken);
+        const tokens = await this.getTokens(payload);
 
-    //   return {
-    //     msg: 'Your account has been verified.',
-    //     accessToken: tokens.accessToken,
-    //     refreshToken: tokens.refreshToken,
-    //   };
-    // }
+        await this.updateRefreshToken(user.id, deviceName, tokens.refreshToken);
 
-    // async forgotPasswordByEmail(
-    //   forgotPasswordDto: ForgotPasswordDto,
-    //   token: string,
-    // ): Promise<Record<string, string>> {
-    //   const { newPassword, deviceName } = forgotPasswordDto;
-
-    //   const decode = this.decodeToken(token);
-
-    //   if (!decode.email) {
-    //     throw new BadRequestException('Invalid confirmation token.');
-    //   }
-
-    //   const user = await this.userRepository.getUserByEmail(decode.email);
-
-    //   const hashPassword = await this.hashData(newPassword);
-
-    //   user.password = hashPassword;
-    //   await user.save();
-
-    //   const payload: Payload = {
-    //     userId: user._id,
-    //     deviceName,
-    //   };
-
-    //   const tokens = await this.getTokens(payload);
-
-    //   await this.updateRefreshToken(user.id, deviceName, tokens.refreshToken);
-
-    //   return {
-    //     msg: 'Your password changed successfully.',
-    //     accessToken: tokens.accessToken,
-    //     refreshToken: tokens.refreshToken,
-    //   };
-    // }
+        return {
+            msg: 'Your password changed successfully.',
+            accessToken: tokens.accessToken,
+            refreshToken: tokens.refreshToken,
+        };
+    }
 
     async getTokens(payload: Payload) {
         const [accessToken, refreshToken] = await Promise.all([
@@ -178,12 +147,12 @@ export class AuthService {
         return this.RefreshTokenService.deleteRefreshToken({ userId, deviceName });
     }
 
-    async refreshTokens({ deviceName, userId, refreshToken }: Payload): Promise<AuthResponeType> {
+    async refreshTokens({ deviceName, userId, refreshToken }: Omit<Payload, 'isAdmin'>): Promise<AuthResponeType> {
         const user = await this.userRepository.findOne({ _id: userId });
 
         const oldRefreshToken = await this.RefreshTokenService.getRefreshToken(userId, deviceName);
 
-        const refreshTokenMatches = await argon2.verify(oldRefreshToken.refreshToken, refreshToken);
+        const refreshTokenMatches = await this.hashService.isMatchHashed(oldRefreshToken.refreshToken, refreshToken);
         if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
 
         const payload: Payload = {
@@ -205,49 +174,12 @@ export class AuthService {
     }
 
     async updateRefreshToken(userId: string, deviceName: string, refreshToken: string) {
-        const hashedRefreshToken = await this.hashData(refreshToken);
+        const hashedRefreshToken = await this.hashService.hashData(refreshToken);
         await this.RefreshTokenService.updateRefreshToken({
             userId,
             deviceName,
             refreshToken,
         });
-    }
-
-    // async sendVerifyEmail(emailDto: NotifyEmailDto) {
-    //   try {
-    //     const token = this.generateToken(emailDto.email);
-    //     const url = `${process.env.BASE_URL}/auth/verify-account?token=${token}`;
-
-    //     emailDto.url = url;
-    //     await this.mailService.sendUserConfirmationEmail(emailDto);
-
-    //     return 'send successfully.';
-    //   } catch (error) {
-    //     throw new BadRequestException('Faild send email.');
-    //   }
-    // }
-
-    // async sendForgotPasswordEmail(emailDto: NotifyEmailDto) {
-    //   try {
-    //     const token = this.generateToken(emailDto.email);
-    //     const url = `${process.env.BASE_URL}/auth/forgot-password?token=${token}`;
-
-    //     emailDto.url = url;
-    //     await this.mailService.sendUserForgotPassword(emailDto);
-
-    //     return 'send successfully.';
-    //   } catch (error) {
-    //     throw new BadRequestException('Faild in send email.');
-    //   }
-    // }
-
-    private hashData(data: string) {
-        return argon2.hash(data);
-    }
-
-    private async isMatchHashed(hash: string, current: string): Promise<boolean> {
-        const isMatch = await argon2.verify(hash, current);
-        return isMatch;
     }
 
     private generateToken(email: string) {

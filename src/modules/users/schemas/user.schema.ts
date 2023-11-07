@@ -5,26 +5,29 @@ import { Document } from 'mongoose';
     timestamps: true,
 })
 export class User extends Document {
-    @Prop()
+    @Prop({ type: String })
     firstName: string;
 
-    @Prop()
+    @Prop({ type: String })
     lastName: string;
 
-    @Prop()
+    @Prop({ type: String })
     companyName: string;
 
-    @Prop()
+    @Prop({ type: String })
     country: string;
 
-    @Prop()
+    @Prop({ type: String, unique: true, index: true })
     email: string;
 
-    @Prop()
+    @Prop({ type: String })
     password: string;
 
-    @Prop()
+    @Prop({ type: String })
     phoneNumber: string;
+
+    @Prop({ type: String, default: null })
+    image: string;
 
     @Prop({ default: true })
     isActive: boolean;

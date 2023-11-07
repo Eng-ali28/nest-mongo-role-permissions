@@ -65,6 +65,9 @@ dependencies:
   compression:
     specifier: ^1.7.4
     version: 1.7.4
+  countries-list:
+    specifier: ^3.0.6
+    version: 3.0.6
   cron:
     specifier: ^3.1.6
     version: 3.1.6
@@ -3077,6 +3080,10 @@ packages:
       path-type: 4.0.0
       typescript: 5.2.2
     dev: true
+
+  /countries-list@3.0.6:
+    resolution: {integrity: sha512-BCJODHTSRMIxS0W80NZw8bC7x6/WS8Tf4FdtFrEbW0FONBbqTAzOrKNG06UEMgLGxOZpOJddiVEdCztKLpmPxA==}
+    dev: false
 
   /create-jest@29.7.0(@types/node@20.8.10)(ts-node@10.9.1):
     resolution: {integrity: sha512-Adz2bdH0Vq3F53KEMJOoftQFutWCukm6J24wbPWRO4k1kMY7gS7ds/uoJkNuV8wDCtWWnuwGcJwpWcih+zEW1Q==}

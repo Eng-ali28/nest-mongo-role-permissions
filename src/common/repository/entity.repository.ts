@@ -1,4 +1,5 @@
-import { Document, FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
+import { BadRequestException } from '@nestjs/common';
+import mongoose, { Document, FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
 
 export abstract class EntityRepository<T extends Document> {
     constructor(protected readonly entityModel: Model<T>) {}
@@ -12,12 +13,26 @@ export abstract class EntityRepository<T extends Document> {
     }
 
     async create(createEntityData: unknown): Promise<T> {
-        const entity = this.entityModel.create(createEntityData);
+        try {
+            const entity = new this.entityModel(createEntityData);
 
-        return entity;
+            return (await entity.save()) as T;
+        } catch (error) {
+            if (error instanceof mongoose.mongo.MongoError) {
+                if (error.code === 11000) {
+                    throw new BadRequestException('Duplicate key error. Document already exists!');
+                } else {
+                    throw new BadRequestException('An error occurred:', error);
+                }
+            }
+        }
     }
 
-    async findOneAndUpdate(entityFilterQuery: FilterQuery<T>, updateEntityData: UpdateQuery<unknown>, options?: QueryOptions<T>): Promise<T | null> {
+    async findOneAndUpdate(
+        entityFilterQuery: FilterQuery<T>,
+        updateEntityData: UpdateQuery<unknown>,
+        options?: QueryOptions<T>,
+    ): Promise<T | null> {
         return this.entityModel.findOneAndUpdate(entityFilterQuery, updateEntityData, { ...options, new: true });
     }
 

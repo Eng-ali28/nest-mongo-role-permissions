@@ -7,7 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Code, CodeSchema } from './schemas/code.schema';
 
 @Module({
-    imports: [UsersModule, MongooseModule.forFeature([{ name: Code.name, schema: CodeSchema }])],
+    imports: [MongooseModule.forFeature([{ name: Code.name, schema: CodeSchema }])],
     controllers: [CodeController],
     providers: [CodeService, CodeRepository],
     exports: [CodeService, CodeRepository],

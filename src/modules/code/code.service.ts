@@ -12,7 +12,6 @@ export class CodeService {
     constructor(
         private readonly mailService: MailService,
         private readonly codeRepository: CodeRepository,
-        private readonly userRepository: UsersRepository,
     ) {}
 
     async sendOtp(sendOtpDto: SendOtpDto, message: string) {
@@ -25,7 +24,13 @@ export class CodeService {
         const maxm = 99999;
         const otp = Math.floor(Math.random() * (maxm - minm + 1)) + minm;
         // send otp via email
-        // await this.mailService.sendOtpMail({ name: 'Dear', to: sendOtpDto.email, otp, subject: 'OTP verification code.' });
+        await this.mailService.sendOtpMail({
+            name: 'Dear',
+            to: sendOtpDto.email,
+            otp,
+            subject: 'OTP for verify email.',
+            message: sendOtpDto.message,
+        });
 
         await this.codeRepository.create({ email: sendOtpDto.email, otp });
 
@@ -33,17 +38,12 @@ export class CodeService {
     }
 
     async verifyCode(verifyCodeDto: VerifyCodeDto, message: string) {
-        const code = await this.findCodeByEmailAndOtp(verifyCodeDto);
+        const code = await this.codeRepository.findCodeByEmailAndOtp(verifyCodeDto);
         if (!code) throw new BadRequestException('Invalid OTP.');
 
         code.active = true;
         await code.save();
 
         return message;
-    }
-
-    private async findCodeByEmailAndOtp(verifyCodeDto: VerifyCodeDto) {
-        const findCode = await this.codeRepository.findOne({ email: verifyCodeDto.email, otp: verifyCodeDto.otp });
-        return findCode;
     }
 }

@@ -6,4 +6,6 @@ export class SendOtpDto {
     @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     @IsEmail({}, { message: i18nValidationMessage<I18nTranslations>('validation.INVALID_EMAIL') })
     email: string;
+
+    message: string;
 }

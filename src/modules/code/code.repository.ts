@@ -3,6 +3,7 @@ import { Code } from './schemas/code.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
+import { VerifyCodeDto } from './dto/verify-code.dto';
 
 @Injectable()
 export class CodeRepository extends EntityRepository<Code> {
@@ -18,5 +19,10 @@ export class CodeRepository extends EntityRepository<Code> {
         await this.CodeModel.deleteOne({ email });
 
         return true;
+    }
+
+    async findCodeByEmailAndOtp(verifyCodeDto: VerifyCodeDto) {
+        const findCode = await this.CodeModel.findOne({ email: verifyCodeDto.email, otp: verifyCodeDto.otp });
+        return findCode;
     }
 }

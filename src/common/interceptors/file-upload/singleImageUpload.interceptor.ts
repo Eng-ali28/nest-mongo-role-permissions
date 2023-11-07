@@ -5,7 +5,7 @@ import { FOLDER_TOKEN } from '../../constant';
 import { uploadImage } from '../../factory/image-upload.factory';
 
 @Injectable()
-export class ImageInterceptor implements NestInterceptor {
+export default class ImageInterceptor implements NestInterceptor {
     constructor(@Inject(FOLDER_TOKEN) private folderName: string) {}
 
     async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {

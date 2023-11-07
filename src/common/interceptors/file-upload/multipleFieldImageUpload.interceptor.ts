@@ -5,7 +5,7 @@ import { Request } from 'express';
 import { uploadImage } from '../../factory/image-upload.factory';
 
 @Injectable()
-export class MultipleFieldImagesInterceptor implements NestInterceptor {
+export default class MultipleFieldImagesInterceptor implements NestInterceptor {
     constructor(@Inject(FOLDER_TOKEN) private folderName: string) {}
 
     async intercept(ctx: ExecutionContext, next: CallHandler<any>): Promise<Observable<any>> {
