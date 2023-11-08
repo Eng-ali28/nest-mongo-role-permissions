@@ -10,7 +10,7 @@ export default class MailService {
             await this.mailerService.sendMail({
                 to,
                 subject,
-                template: __dirname + '/templates/verify',
+                template: __dirname + '/templates/otp',
                 context: {
                     name,
                     otp,

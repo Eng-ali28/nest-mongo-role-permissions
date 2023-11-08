@@ -22,16 +22,16 @@ export class CreateUserDto {
     @IsISO31661Alpha2({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
     country: string;
 
-    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     @IsPhoneNumber()
+    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     phoneNumber: string;
 
-    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     @IsEmail({}, { message: i18nValidationMessage<I18nTranslations>('validation.INVALID_EMAIL') })
+    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     email: string;
 
-    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
-    @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
     @Length(8, 64, { message: i18nValidationMessage<I18nTranslations>('validation.LENGTH', {}) })
+    @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
+    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     password: string;
 }

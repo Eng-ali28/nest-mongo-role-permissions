@@ -31,7 +31,7 @@ export class AuthService {
         if (findUser) throw new BadRequestException('Email already exists.');
 
         const code = await this.codeRepository.findActiveCode(data.email);
-        if (!code) throw new BadRequestException('Please verify your email.');
+        if (!code) throw new BadRequestException(' Please confirm your email first.');
 
         const user = await this.userRepository.create({
             ...data,
@@ -58,7 +58,7 @@ export class AuthService {
     }
 
     async login({ deviceName, ...loginDto }: LoginDto) {
-        let user = await this.userRepository.findOne({ email: loginDto.email }, { lean: true });
+        let user = await this.userRepository.findOne({ email: loginDto.email });
         if (!user) {
             throw new UnauthorizedException('Invalid email or password.');
         }
@@ -77,9 +77,10 @@ export class AuthService {
 
         const tokens = await this.getTokens(payload);
         await this.updateRefreshToken(user.id, deviceName, tokens.refreshToken);
+        const userLeanObject = user.toObject();
 
         return {
-            ...user,
+            ...userLeanObject,
             accessToken: tokens.accessToken,
             refreshToken: tokens.refreshToken,
         };
@@ -175,10 +176,11 @@ export class AuthService {
 
     async updateRefreshToken(userId: string, deviceName: string, refreshToken: string) {
         const hashedRefreshToken = await this.hashService.hashData(refreshToken);
+
         await this.RefreshTokenService.updateRefreshToken({
             userId,
             deviceName,
-            refreshToken,
+            refreshToken: hashedRefreshToken,
         });
     }
 

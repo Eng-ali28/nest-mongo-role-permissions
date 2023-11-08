@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import mongoose, { Document, FilterQuery, Model, QueryOptions, UpdateQuery } from 'mongoose';
+import { MagicQueryDto, PaginateDto } from '../dto';
 
 export abstract class EntityRepository<T extends Document> {
     constructor(protected readonly entityModel: Model<T>) {}
@@ -8,8 +9,34 @@ export abstract class EntityRepository<T extends Document> {
         return this.entityModel.findOne(entityFilterQuery, {}, option).exec();
     }
 
-    async find(entityFilterQuery: FilterQuery<T>): Promise<T[]> {
-        return this.entityModel.find(entityFilterQuery);
+    async find(entityFilterQuery: FilterQuery<T>, option: QueryOptions<T> = {}): Promise<T[]> {
+        return this.entityModel.find(entityFilterQuery, {}, option);
+    }
+
+    async findWithPagination({
+        filterQuery,
+        option,
+        paginateDto,
+    }: {
+        filterQuery?: FilterQuery<T>;
+        option?: QueryOptions<T>;
+        paginateDto?: PaginateDto;
+    }): Promise<{ data: T[]; count: number }> {
+        let query = this.entityModel.find(filterQuery, {}, option);
+
+        if (paginateDto.pageSize || paginateDto.pageNumber) {
+            const { pageNumber = 1, pageSize = 10 } = paginateDto;
+
+            const limit = pageSize;
+            const skip = (pageNumber - 1) * limit;
+
+            query = query.limit(limit).skip(skip);
+        }
+
+        const result = await query.exec();
+        const count = await this.entityModel.countDocuments(filterQuery);
+
+        return { data: result, count };
     }
 
     async create(createEntityData: unknown): Promise<T> {

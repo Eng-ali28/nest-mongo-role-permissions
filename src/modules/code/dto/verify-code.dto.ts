@@ -4,8 +4,8 @@ import { NumberLength } from 'src/common';
 import { I18nTranslations } from 'src/locales/generated/i18n.generated';
 
 export class VerifyCodeDto {
-    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     @IsEmail({}, { message: i18nValidationMessage<I18nTranslations>('validation.INVALID_EMAIL') })
+    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     email: string;
 
     @IsNumber({}, { message: i18nValidationMessage<I18nTranslations>('validation.IS_NUMBER') })

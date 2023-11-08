@@ -3,41 +3,21 @@ import { i18nValidationMessage } from 'nestjs-i18n';
 import { I18nTranslations } from 'src/locales/generated/i18n.generated';
 
 export class LoginDto {
-    @IsNotEmpty({
-        message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
-    })
-    @IsEmail(
-        {},
-        {
-            message: i18nValidationMessage<I18nTranslations>('validation.INVALID_EMAIL'),
-        },
-    )
+    @IsEmail({}, { message: i18nValidationMessage<I18nTranslations>('validation.INVALID_EMAIL') })
+    @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
+    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     email: string;
 
-    @IsNotEmpty({
-        message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
-    })
-    @IsString({
-        message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING'),
-    })
-    @Length(8, 64, {
-        message: i18nValidationMessage<I18nTranslations>('validation.LENGTH', {}),
-    })
+    @Length(8, 64, { message: i18nValidationMessage<I18nTranslations>('validation.LENGTH', {}) })
+    @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
+    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     password: string;
 
-    @IsOptional({
-        message: i18nValidationMessage<I18nTranslations>('validation.OPTIONAL'),
-    })
-    @IsString({
-        message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING'),
-    })
+    @IsOptional({ message: i18nValidationMessage<I18nTranslations>('validation.OPTIONAL') })
+    @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
     deviceToken: string;
 
-    @IsNotEmpty({
-        message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY'),
-    })
-    @IsString({
-        message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING'),
-    })
+    @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
+    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     deviceName: string;
 }

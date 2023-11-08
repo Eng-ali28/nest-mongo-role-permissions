@@ -15,7 +15,7 @@ import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { User } from './decorator/currentuser.decorator';
+import { CurrentUser } from '../../common/decorators/auth/currentuser.decorator';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { AuthRequest, USER } from './types/authUser.types';
 import { AuthService } from './auth.service';
@@ -37,7 +37,7 @@ export class AuthController {
     }
 
     @Get('logout')
-    async logout(@User() payload: Payload) {
+    async logout(@CurrentUser() payload: Payload) {
         await this.authService.logout(payload.userId, payload.deviceName);
         return 'Logout successfully';
     }
@@ -47,10 +47,11 @@ export class AuthController {
     refreshTokens(@Req() req: AuthRequest) {
         const userId = req.user.userId;
         const refreshToken = req.user.refreshToken;
+
         return this.authService.refreshTokens({ userId, refreshToken, deviceName: req.user.deviceName });
     }
 
-    @Put('forgot-password')
+    @Put('forgot_password')
     async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<Record<string, string>> {
         return await this.authService.forgotPassword(forgotPasswordDto);
     }
