@@ -9,10 +9,10 @@ export class CodeController {
 
     @Post('verify_account_otp')
     async sendOtpVerifyAccount(@Body() sendOtpDto: SendOtpDto) {
-        sendOtpDto.message = 'verify your email';
+        sendOtpDto.message = 'verify your phone number';
         return await this.codeService.sendOtp(
             sendOtpDto,
-            'OTP sent successfully, check your email and verify account.',
+            'OTP sent successfully, check your phone number and verify account.',
         );
     }
 
@@ -26,7 +26,7 @@ export class CodeController {
         sendOtpDto.message = 'reset your password';
         return await this.codeService.sendOtp(
             sendOtpDto,
-            'OTP sent successfully, check your email and reset your password.',
+            'OTP sent successfully, check your phone number and reset your password.',
         );
     }
 }

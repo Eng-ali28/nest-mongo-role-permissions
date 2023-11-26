@@ -11,8 +11,8 @@ export class ForgotPasswordDto {
     newPassword: string;
 
     @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
-    @IsEmail({}, { message: i18nValidationMessage<I18nTranslations>('validation.INVALID_EMAIL') })
-    email: string;
+    @IsPhoneNumber(undefined, { message: i18nValidationMessage<I18nTranslations>('validation.PHONENUMBER') })
+    phoneNumber: string;
 
     @IsNumber({}, { message: i18nValidationMessage<I18nTranslations>('validation.IS_NUMBER') })
     @NumberLength(5, 5)

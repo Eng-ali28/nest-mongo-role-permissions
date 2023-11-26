@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 @Schema({ timestamps: true })
 export class Code extends Document {
     @Prop()
-    email: string;
+    phoneNumber: string;
 
     @Prop({ default: false })
     active: boolean;

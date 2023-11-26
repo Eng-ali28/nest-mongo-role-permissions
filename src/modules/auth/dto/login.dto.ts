@@ -3,10 +3,9 @@ import { i18nValidationMessage } from 'nestjs-i18n';
 import { I18nTranslations } from 'src/locales/generated/i18n.generated';
 
 export class LoginDto {
-    @IsEmail({}, { message: i18nValidationMessage<I18nTranslations>('validation.INVALID_EMAIL') })
-    @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
+    @IsPhoneNumber(undefined, { message: i18nValidationMessage<I18nTranslations>('validation.PHONENUMBER') })
     @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
-    email: string;
+    phoneNumber: string;
 
     @Length(8, 64, { message: i18nValidationMessage<I18nTranslations>('validation.LENGTH', {}) })
     @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })

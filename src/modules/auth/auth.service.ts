@@ -27,11 +27,11 @@ export class AuthService {
     async signup(signUpDto: SignUpDto): Promise<AuthResponeType> {
         const { password, deviceName, ...data } = signUpDto;
 
-        const findUser = await this.userRepository.findOne({ email: data.email });
-        if (findUser) throw new BadRequestException('Email already exists.');
+        const findUser = await this.userRepository.findOne({ phoneNumber: data.phoneNumber });
+        if (findUser) throw new BadRequestException('phoneNumber already exists.');
 
-        const code = await this.codeRepository.findActiveCode(data.email);
-        if (!code) throw new BadRequestException(' Please confirm your email first.');
+        const code = await this.codeRepository.findActiveCode(data.phoneNumber);
+        if (!code) throw new BadRequestException(' Please confirm your phone number first.');
 
         const user = await this.userRepository.create({
             ...data,
@@ -58,13 +58,13 @@ export class AuthService {
     }
 
     async login({ deviceName, ...loginDto }: LoginDto) {
-        let user = await this.userRepository.findOne({ email: loginDto.email });
+        let user = await this.userRepository.findOne({ phoneNumber: loginDto.phoneNumber });
         if (!user) {
-            throw new UnauthorizedException('Invalid email or password.');
+            throw new UnauthorizedException('Invalid phoneNumber or password.');
         }
 
         if (!(await this.hashService.isMatchHashed(user.password, loginDto.password))) {
-            throw new UnauthorizedException('Invalid email or password.');
+            throw new UnauthorizedException('Invalid phoneNumber or password.');
         }
 
         const payload: Payload = {
@@ -87,12 +87,12 @@ export class AuthService {
     }
 
     async forgotPassword(forgotPasswordDto: ForgotPasswordDto): Promise<Record<string, string>> {
-        const { newPassword, email, otp, deviceName } = forgotPasswordDto;
+        const { newPassword, phoneNumber, otp, deviceName } = forgotPasswordDto;
 
-        const code = await this.codeRepository.findCodeByEmailAndOtp({ email, otp });
+        const code = await this.codeRepository.findCodeByPhoneNumberAndOtp({ phoneNumber, otp });
         if (!code) throw new BadRequestException('Invalid OTP.');
 
-        const user = await this.userRepository.findOne({ email });
+        const user = await this.userRepository.findOne({ phoneNumber });
 
         const hashPassword = await this.hashService.hashData(newPassword);
 

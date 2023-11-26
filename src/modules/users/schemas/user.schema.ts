@@ -17,13 +17,13 @@ export class User extends Document {
     @Prop({ type: String })
     country: string;
 
-    @Prop({ type: String, unique: true, index: true })
+    @Prop({ type: String, unique: true })
     email: string;
 
     @Prop({ type: String })
     password: string;
 
-    @Prop({ type: String })
+    @Prop({ type: String, unique: true, index: true })
     phoneNumber: string;
 
     @Prop({ type: String, default: null })

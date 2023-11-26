@@ -34,12 +34,21 @@ export class UsersService {
         return user;
     }
 
+    async getUserByPhoneNumber(phoneNumber: string): Promise<User> {
+        const user = await this.usersRepository.findOne({ phoneNumber });
+
+        if (!user) throw new NotFoundException('User not found');
+
+        return user;
+    }
+
     async getUsers(magicQuery: MagicQueryDto): Promise<{ data: User[]; count: number }> {
         let filterQueryObj: FilterQuery<User> = {};
 
         if (magicQuery.q) {
             filterQueryObj.$or = [
                 { email: { $regex: magicQuery.q, $options: 'im' } },
+                { phoneNumber: { $regex: magicQuery.q, $options: 'im' } },
                 { firstName: { $regex: magicQuery.q, $options: 'im' } },
             ];
         }

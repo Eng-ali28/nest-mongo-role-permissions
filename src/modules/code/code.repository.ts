@@ -11,18 +11,21 @@ export class CodeRepository extends EntityRepository<Code> {
         super(CodeModel);
     }
 
-    async findActiveCode(email: string) {
-        const code = await this.CodeModel.findOne({ email, active: true });
+    async findActiveCode(phoneNumber: string) {
+        const code = await this.CodeModel.findOne({ phoneNumber, active: true });
 
         if (!code) return false;
 
-        await this.CodeModel.deleteOne({ email });
+        await this.CodeModel.deleteOne({ phoneNumber });
 
         return true;
     }
 
-    async findCodeByEmailAndOtp(verifyCodeDto: VerifyCodeDto) {
-        const findCode = await this.CodeModel.findOne({ email: verifyCodeDto.email, otp: verifyCodeDto.otp });
+    async findCodeByPhoneNumberAndOtp(verifyCodeDto: VerifyCodeDto) {
+        const findCode = await this.CodeModel.findOne({
+            phoneNumber: verifyCodeDto.phoneNumber,
+            otp: verifyCodeDto.otp,
+        });
         return findCode;
     }
 }
