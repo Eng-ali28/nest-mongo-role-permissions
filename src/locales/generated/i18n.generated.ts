@@ -24,6 +24,7 @@ export type I18nTranslations = {
         "USER_PHONE_EXISTS": string;
         "IS_BOOLEAN": string;
         "IS_UUID": string;
+        "IS_MONGOID": string;
         "IS_DATE": string;
         "ID_EXISTS": string;
         "IsNotBeforeToday": string;

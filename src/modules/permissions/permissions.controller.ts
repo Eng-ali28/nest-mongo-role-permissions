@@ -1,18 +1,14 @@
-import {
-    Controller, Get, Post, Body, Param, Delete, Query, Put
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Query, Put } from '@nestjs/common';
 import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
-import { MagicQueryDto } from 'src/common';
+import { MagicQueryDto, ParseMongoIdPipe } from 'src/common';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
-
 
 @Controller('permissions')
 export class PermissionsController {
     constructor(
-        private readonly permissionsService: PermissionsService,
-        //private readonly adSeeder: ADSeeder,
-    ) { }
+        private readonly permissionsService: PermissionsService, //private readonly adSeeder: ADSeeder,
+    ) {}
 
     @Post()
     createNewPermission(@Body() createPermissionDto: CreatePermissionDto) {
@@ -30,12 +26,15 @@ export class PermissionsController {
     }
 
     @Put(':id')
-    async updatePermission(@Param('id') id: string, @Body() updatePermissionDto: UpdatePermissionDto) {
+    async updatePermission(
+        @Param('id', ParseMongoIdPipe) id: string,
+        @Body() updatePermissionDto: UpdatePermissionDto,
+    ) {
         return await this.permissionsService.update(id, updatePermissionDto);
     }
 
     @Delete(':id')
-    async deleteCategory(@Param('id') id: string) {
+    async deleteCategory(@Param('id', ParseMongoIdPipe) id: string) {
         await this.permissionsService.delete(id);
         return 'Deleted successfully.';
     }

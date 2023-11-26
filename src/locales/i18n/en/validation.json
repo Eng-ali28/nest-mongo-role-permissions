@@ -15,6 +15,7 @@
     "USER_PHONE_EXISTS": "User with this phone not exists.",
     "IS_BOOLEAN": "{property} must be a boolean value.",
     "IS_UUID": "{property} must be a valid uuid v4",
+    "IS_MONGOID": "{property} must be a valid mongoDB id.",
     "IS_DATE": "{property} must be a valid date",
     "ID_EXISTS": "{model} with this {property} not exists.",
     "IsNotBeforeToday": "This date is old.",
