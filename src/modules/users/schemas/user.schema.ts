@@ -29,6 +29,9 @@ export class User extends Document {
     @Prop({ default: true })
     isActive: boolean;
 
+    @Prop({ default: false })
+    isAdmin: boolean;
+
     @Prop({ required: false })
     deviceToken: string;
 }

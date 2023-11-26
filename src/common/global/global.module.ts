@@ -12,6 +12,7 @@ import { UsersModule } from 'src/modules/users/users.module';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { RefreshTokenModule } from 'src/modules/refresh token/refreshtoken.module';
 import { CodeModule } from 'src/modules/code/code.module';
+import { PermissionsModule } from 'src/modules/permissions/permissions.module';
 
 export const GlobalModules = [
     ConfigModule.forRoot({ isGlobal: true, validate }),
@@ -64,4 +65,5 @@ export const GlobalModules = [
     RefreshTokenModule,
     AuthModule,
     CodeModule,
+    PermissionsModule
 ];
