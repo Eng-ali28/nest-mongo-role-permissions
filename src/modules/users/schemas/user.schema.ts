@@ -11,13 +11,10 @@ export class User extends Document {
     @Prop({ type: String })
     lastName: string;
 
-    @Prop({ type: String })
-    companyName: string;
+    @Prop({ type: Date })
+    birthDay: Date;
 
-    @Prop({ type: String })
-    country: string;
-
-    @Prop({ type: String, unique: true })
+    @Prop({ type: String, default: null })
     email: string;
 
     @Prop({ type: String })
@@ -34,9 +31,6 @@ export class User extends Document {
 
     @Prop({ required: false })
     deviceToken: string;
-
-    @Prop({ default: false })
-    isAdmin: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

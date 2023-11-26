@@ -15,7 +15,7 @@ export class ForgotPasswordDto {
     phoneNumber: string;
 
     @IsNumber({}, { message: i18nValidationMessage<I18nTranslations>('validation.IS_NUMBER') })
-    @NumberLength(5, 5)
+    @NumberLength(6, 6)
     @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     otp: number;
 

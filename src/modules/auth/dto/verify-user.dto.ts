@@ -9,7 +9,7 @@ export class VerifyUserDto {
     @IsPhoneNumber(null, { message: i18nValidationMessage<I18nTranslations>('validation.PHONENUMBER') })
     phoneNumber: string;
 
-    @NumberLength(5, 5)
+    @NumberLength(6, 6)
     @IsNumber({}, { message: i18nValidationMessage<I18nTranslations>('validation.IS_NUMBER') })
     @Type(() => Number)
     @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })

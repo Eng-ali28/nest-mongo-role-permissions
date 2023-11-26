@@ -21,8 +21,8 @@ export class CodeService {
             throw new BadRequestException('You already has OTP code.');
         }
 
-        const minm = 10000;
-        const maxm = 99999;
+        const minm = 100000;
+        const maxm = 999999;
         const otp = Math.floor(Math.random() * (maxm - minm + 1)) + minm;
         // send otp via whatsapp
         await this.whatsappService.sendOtp(sendOtpDto.phoneNumber, otp);
