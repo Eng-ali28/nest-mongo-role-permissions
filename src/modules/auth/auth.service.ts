@@ -13,6 +13,7 @@ import { CodeRepository } from '../code/code.repository';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import HashService from 'src/common/util/hash.service';
 import { ROLE } from '../role/roles/role.enum';
+import { log } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -51,7 +52,7 @@ export class AuthService {
         const tokens = await this.getTokens(payload);
 
         await this.updateRefreshToken(user.id, deviceName, tokens.refreshToken);
-
+        log(tokens)
         return {
             ...userLeanObject,
             accessToken: tokens.accessToken,
