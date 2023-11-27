@@ -15,6 +15,7 @@
     "USER_PHONE_EXISTS": ".لا يوجد مستخدم لهذا الرقم",
     "IS_BOOLEAN": ".يحب ان تكون قيمة بوليانية {property}",
     "IS_UUID": "uuid v4 يجب أن تكون نمط صحيح من {property}",
+    "IS_MONGOID": "mongoDb id يجب أن تكون نمط صحيح من {property}",
     "IS_DATE": ". يجب أن تاريخ صحيح {property}",
     "ID_EXISTS": ".غير موجود {property} : مع هذه الخاصية  {model}",
     "IsNotBeforeToday": ".التاريخ الذي أدخلته قديم",
