@@ -9,7 +9,7 @@ import { UsersService } from 'src/modules/users/users.service';
 export class PermissionsGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
-        private readonly usersService: UsersService, 
+        private readonly usersService: UsersService,
         private readonly permissionsService: PermissionsService,
         private readonly rolesService: RolesService
     ) {
@@ -23,10 +23,18 @@ export class PermissionsGuard implements CanActivate {
         console.log(receivedPermissions);
 
         // Getting user:
-        let user = request.user;
-        console.log(user);
+        let user = await this.usersService.getUserById(request.user.id)
 
-        return true;
+        let allPermissions = []
+        for (let i = 0; i < user.roles.length; i++) {
+            for (let j = 0; j < user.roles[i].permissions.length; j++) {
+                let permission = await this.permissionsService.findOneById(user.roles[i].permissions[j]._id)
+                allPermissions.push(permission.action)
+            }
+
+        }
+
+        return receivedPermissions.some(item => allPermissions.includes(item));
 
     }
 
