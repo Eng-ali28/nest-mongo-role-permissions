@@ -10,39 +10,40 @@ import { memoryStorage } from 'multer';
 import ValidateImageTypePipe from 'src/common/pipes/image/validateSingleImageType';
 import ImageInterceptor from 'src/common/interceptors/file-upload/singleImageUpload.interceptor';
 import AdminAuth from 'src/common/decorators/auth/admin-auth.decorator';
-import Auth from 'src/common/decorators/auth/regular-auth.decorator';
 import { USER } from '../auth/types/authUser.types';
 import { UpdateUserPasswordDto } from './dto/update-password.dto';
+import { log } from 'console';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @Auth()
+    //@Auth()
     @Get(':id')
     async getUser(@Param('id', ParseMongoIdPipe) userId: string): Promise<User> {
         return await this.usersService.getUserById(userId);
     }
 
-    @AdminAuth()
+    //@AdminAuth()
     @Get()
     async getUsers(@Query() maigcQuery: MagicQueryDto): Promise<{ data: User[]; count: number }> {
         return await this.usersService.getUsers(maigcQuery);
     }
 
-    @AdminAuth()
+    //@AdminAuth()
     @Post()
     async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+        log('hello ')
         return await this.usersService.createUser(createUserDto);
     }
 
-    @Auth()
+    //@Auth()
     @Put()
     async updateUser(@CurrentUser(USER.ID) userId: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
         return await this.usersService.updateUser(userId, updateUserDto);
     }
 
-    @Auth()
+    //@Auth()
     @Put('update_password')
     async updateUserPassword(
         @CurrentUser(USER.ID) userId: string,
@@ -70,7 +71,7 @@ export class UsersController {
         return await this.usersService.setUserImage(userId, file.path);
     }
 
-    @Auth()
+    //@Auth()
     @UseInterceptors(FileInterceptor('image', { storage: memoryStorage() }), ImageInterceptor)
     @Put('set_image/:id')
     async setImage(

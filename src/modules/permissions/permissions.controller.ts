@@ -3,6 +3,8 @@ import { PermissionsService } from './permissions.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { MagicQueryDto, ParseMongoIdPipe } from 'src/common';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { Auth } from 'src/common/decorators/auth/auth.decorator';
+
 
 @Controller('permissions')
 export class PermissionsController {
@@ -10,6 +12,12 @@ export class PermissionsController {
         private readonly permissionsService: PermissionsService, //private readonly adSeeder: ADSeeder,
     ) {}
 
+    @Auth('Hello')
+    @Get('/test')
+    async testdd(){
+        return 'good '
+    }
+    
     @Post()
     createNewPermission(@Body() createPermissionDto: CreatePermissionDto) {
         return this.permissionsService.create(createPermissionDto);
@@ -38,4 +46,6 @@ export class PermissionsController {
         await this.permissionsService.delete(id);
         return 'Deleted successfully.';
     }
+
+  
 }
