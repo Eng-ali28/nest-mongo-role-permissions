@@ -10,6 +10,7 @@ import HashService from 'src/common/util/hash.service';
 import { MagicQueryDto } from 'src/common';
 import { FilterQuery } from 'mongoose';
 import { UpdateUserPasswordDto } from './dto/update-password.dto';
+import { ROLE } from '../role/roles/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -60,10 +61,10 @@ export class UsersService {
         });
     }
 
-    async createUser(createUserDto: CreateUserDto): Promise<User> {
+    async createUser({ roles, ...createUserDto }: CreateUserDto): Promise<User> {
         const hashPassword = await this.hashService.hashData(createUserDto.password);
-
-        return await this.usersRepository.create({ ...createUserDto, password: hashPassword });
+        const userRoles = roles || [ROLE.USER_ROLE];
+        return await this.usersRepository.create({ ...createUserDto, roles: userRoles, password: hashPassword });
     }
 
     async updateUserByAdmin(userId: string, userUpdates: UpdateUserByAdminDto): Promise<User> {

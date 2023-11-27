@@ -48,7 +48,7 @@ export class RolesService {
     }
 
     // helper:
-    async findOneByAction(action: string): Promise<Role> {
-        return await this.rolesRepository.findOne({ action: action });
+    async findOneByName(name: string): Promise<Role> {
+        return await this.rolesRepository.findOne({ name });
     }
 }

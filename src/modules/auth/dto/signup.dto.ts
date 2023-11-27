@@ -1,9 +1,10 @@
+import { OmitType } from '@nestjs/mapped-types';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
 import { I18nTranslations } from 'src/locales/generated/i18n.generated';
 import { CreateUserDto } from 'src/modules/users/dto/create-user.dto';
 
-export class SignUpDto extends CreateUserDto {
+export class SignUpDto extends OmitType(CreateUserDto, ['roles']) {
     @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
     @IsOptional({ message: i18nValidationMessage<I18nTranslations>('validation.OPTIONAL') })
     deviceToken: string;

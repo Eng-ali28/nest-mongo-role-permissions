@@ -1,4 +1,14 @@
-import { IsEmail, IsISO31661Alpha2, IsNotEmpty, IsPhoneNumber, IsString, Length } from 'class-validator';
+import { Transform } from 'class-transformer';
+import {
+    IsArray,
+    IsEmail,
+    IsISO31661Alpha2,
+    IsNotEmpty,
+    IsOptional,
+    IsPhoneNumber,
+    IsString,
+    Length,
+} from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
 import { I18nTranslations } from 'src/locales/generated/i18n.generated';
 
@@ -34,4 +44,9 @@ export class CreateUserDto {
     @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
     @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     password: string;
+
+    @IsString({ each: true, message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
+    @IsArray()
+    @IsOptional({ message: i18nValidationMessage<I18nTranslations>('validation.OPTIONAL') })
+    roles: string[];
 }

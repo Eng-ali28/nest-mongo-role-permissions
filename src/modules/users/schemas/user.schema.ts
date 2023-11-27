@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+import { Role } from 'src/modules/role/schemas/roles.schema';
 
 @Schema({
     timestamps: true,
@@ -28,6 +29,9 @@ export class User extends Document {
 
     @Prop({ default: true })
     isActive: boolean;
+
+    @Prop({ type: [String], ref: Role.name, default: [] })
+    roles: Role[];
 
     @Prop({ default: false })
     isAdmin: boolean;

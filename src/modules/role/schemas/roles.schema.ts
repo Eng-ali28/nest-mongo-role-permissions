@@ -8,7 +8,7 @@ import { Permission } from 'src/modules/permissions/schemas/permission.schema';
     toJSON: { virtuals: true },
 })
 export class Role extends Document {
-    @Prop({ type: String, unique: true })
+    @Prop({ type: String, unique: true, index: true })
     name: string;
 
     @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Permission.name, unique: true })

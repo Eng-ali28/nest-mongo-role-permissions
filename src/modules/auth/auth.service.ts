@@ -12,6 +12,7 @@ import { UsersRepository } from '../users/users.repository';
 import { CodeRepository } from '../code/code.repository';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import HashService from 'src/common/util/hash.service';
+import { ROLE } from '../role/roles/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +37,7 @@ export class AuthService {
         const user = await this.userRepository.create({
             ...data,
             password: await this.hashService.hashData(password),
+            roles: [ROLE.USER_ROLE],
         });
 
         const userLeanObject = user.toObject();
