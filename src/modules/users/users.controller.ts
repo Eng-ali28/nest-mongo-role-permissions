@@ -11,8 +11,7 @@ import ValidateImageTypePipe from 'src/common/pipes/image/validateSingleImageTyp
 import ImageInterceptor from 'src/common/interceptors/file-upload/singleImageUpload.interceptor';
 import { USER } from '../auth/types/authUser.types';
 import { UpdateUserPasswordDto } from './dto/update-password.dto';
-import { log } from 'console';
-import { Auth } from 'src/common/decorators/auth/auth.decorator';
+import { Auth } from 'src/modules/auth/decorators/auth.decorator';
 import { UsersPermissionsEnum } from './permissions/permissions.enum';
 
 @Controller('users')

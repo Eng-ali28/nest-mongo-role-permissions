@@ -15,7 +15,7 @@ import { LoginDto } from './dto/login.dto';
 import { SignUpDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
-import { CurrentUser } from '../../common/decorators/auth/currentuser.decorator';
+import { CurrentUser } from './decorators/currentuser.decorator';
 import { RefreshTokenGuard } from './guards/refreshToken.guard';
 import { AuthRequest, USER } from './types/authUser.types';
 import { AuthService } from './auth.service';

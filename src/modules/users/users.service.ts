@@ -16,7 +16,6 @@ export class UsersService {
     constructor(
         private readonly usersRepository: UsersRepository,
         private readonly hashService: HashService,
-        private readonly RoleService: RolesService,
     ) {}
 
     async getUserById(userId: string): Promise<User> {
@@ -88,32 +87,6 @@ export class UsersService {
         const updatedUser = await findUser.save();
 
         return updatedUser;
-    }
-
-    async getUserPermissionsByUserId(userId: string) {
-        const { roles } = await this.usersRepository.findOne(
-            { _id: userId },
-            {
-                lean: true,
-                projection: { roles: 1 },
-                populate: {
-                    path: 'roles',
-                    foreignField: 'name',
-                },
-            },
-        );
-
-        const permissions = [
-            ...new Set(
-                roles
-                    .map((role) => {
-                        return role.permissions;
-                    })
-                    .flat(),
-            ),
-        ];
-
-        return permissions;
     }
 
     async setUserImage(userId: string, image: string): Promise<User> {

@@ -8,10 +8,12 @@ import { PermissionsService } from './permissions.service';
 import { PermissionsRepository } from './permissions.repository';
 import { PermissionSeeder } from './permissions.seeder';
 import { UsersModule } from '../users/users.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
     imports: [
         forwardRef(() => UsersModule),
+        AuthModule,
         MongooseModule.forFeature([{ name: Permissions.name, schema: PermissionSchema }]),
     ],
     controllers: [PermissionsController],

@@ -197,6 +197,32 @@ export class AuthService {
         );
     }
 
+    async getUserPermissionsByUserId(userId: string) {
+        const { roles } = await this.userRepository.findOne(
+            { _id: userId },
+            {
+                lean: true,
+                projection: { roles: 1 },
+                populate: {
+                    path: 'roles',
+                    foreignField: 'name',
+                },
+            },
+        );
+
+        const permissions = [
+            ...new Set(
+                roles
+                    .map((role) => {
+                        return role.permissions;
+                    })
+                    .flat(),
+            ),
+        ];
+
+        return permissions;
+    }
+
     private decodeToken(token: string) {
         const decode = this.jwtService.verify(token, {
             secret: process.env.SECRET_TOKEN_PARAM,

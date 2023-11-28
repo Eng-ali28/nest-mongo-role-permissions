@@ -4,12 +4,13 @@ import { UsersService } from 'src/modules/users/users.service';
 import { AuthRequest } from '../types/authUser.types';
 import { Permission } from 'src/common';
 import TranslateException from 'src/common/util/translate.exciption.service';
+import { AuthService } from '../auth.service';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
-        private readonly usersService: UsersService,
+        private readonly authService: AuthService,
         private readonly translateExceptionService: TranslateException,
     ) {}
 
@@ -20,7 +21,7 @@ export class PermissionsGuard implements CanActivate {
         const receivedPermissions = this.reflector.get<Permission[]>('permissions', context.getHandler());
 
         // Getting user:
-        let permissions = await this.usersService.getUserPermissionsByUserId(request.user.userId);
+        let permissions = await this.authService.getUserPermissionsByUserId(request.user.userId);
 
         const isAuthorizaed = receivedPermissions.some((item) => (permissions as Permission[]).includes(item));
 
