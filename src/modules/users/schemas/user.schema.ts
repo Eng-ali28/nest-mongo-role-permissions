@@ -30,11 +30,8 @@ export class User extends Document {
     @Prop({ default: true })
     isActive: boolean;
 
-    @Prop({ type: [String], ref: Role.name, default: [] })
+    @Prop([{ type: String, ref: Role.name }])
     roles: Role[];
-
-    @Prop({ default: false })
-    isAdmin: boolean;
 
     @Prop({ required: false })
     deviceToken: string;

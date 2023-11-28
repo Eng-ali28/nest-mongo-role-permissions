@@ -1,7 +1,7 @@
 // src/permissions/permission.seeder.ts
 import { Injectable } from '@nestjs/common';
 
-import { permissions } from './permissions/permissions';
+import { permissionsForRole } from './permissions/permissions';
 import { PermissionsService } from '../permissions/permissions.service';
 import { roles } from './roles/roles';
 import { RolesService } from './roles.service';
@@ -14,7 +14,7 @@ export class RoleSeeder {
     ) {}
 
     async seed() {
-        for (const permission of permissions) {
+        for (const permission of permissionsForRole) {
             if (!(await this.permissionsService.findOneByAction(permission.action))) {
                 await this.permissionsService.create(permission);
             }

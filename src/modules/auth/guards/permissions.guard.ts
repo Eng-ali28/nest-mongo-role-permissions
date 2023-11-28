@@ -1,41 +1,30 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { PermissionsService } from 'src/modules/permissions/permissions.service';
-import { RolesService } from 'src/modules/role/roles.service';
 import { UsersService } from 'src/modules/users/users.service';
-
+import { AuthRequest } from '../types/authUser.types';
+import { Permission } from 'src/common';
+import TranslateException from 'src/common/util/translate.exciption.service';
 
 @Injectable()
 export class PermissionsGuard implements CanActivate {
     constructor(
         private readonly reflector: Reflector,
         private readonly usersService: UsersService,
-        private readonly permissionsService: PermissionsService,
-        private readonly rolesService: RolesService
-    ) {
-    }
+        private readonly translateExceptionService: TranslateException,
+    ) {}
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request = context.switchToHttp().getRequest();
-        console.log('We are in our guard.');
+        const request = context.switchToHttp().getRequest() as AuthRequest;
+
         // Getting the permission from decorator:
-        const receivedPermissions = this.reflector.get<string[]>('permissions', context.getHandler());
-        console.log(receivedPermissions);
+        const receivedPermissions = this.reflector.get<Permission[]>('permissions', context.getHandler());
 
         // Getting user:
-        let user = await this.usersService.getUserById(request.user.id)
+        let permissions = await this.usersService.getUserPermissionsByUserId(request.user.userId);
 
-        let allPermissions = []
-        for (let i = 0; i < user.roles.length; i++) {
-            for (let j = 0; j < user.roles[i].permissions.length; j++) {
-                let permission = await this.permissionsService.findOneById(user.roles[i].permissions[j]._id)
-                allPermissions.push(permission.action)
-            }
+        const isAuthorizaed = receivedPermissions.some((item) => (permissions as Permission[]).includes(item));
 
-        }
-
-        return receivedPermissions.some(item => allPermissions.includes(item));
-
+        if (isAuthorizaed) return true;
+        else this.translateExceptionService.I18nUnauthorizedException();
     }
-
 }

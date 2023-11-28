@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { Permission } from 'src/modules/permissions/schemas/permission.schema';
+import { Permissions } from 'src/modules/permissions/schemas/permission.schema';
 
 @Schema({
     timestamps: true,
@@ -11,8 +11,8 @@ export class Role extends Document {
     @Prop({ type: String, unique: true, index: true })
     name: string;
 
-    @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Permission.name, unique: true })
-    permissions: Permission[];
+    @Prop([{ type: String, ref: Permissions.name, unique: true }])
+    permissions: Permissions[];
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);

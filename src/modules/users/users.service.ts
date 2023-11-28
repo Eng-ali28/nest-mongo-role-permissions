@@ -1,22 +1,22 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserByAdminDto, UpdateUserDto } from './dto/update-user.dto';
 
 import { User } from './schemas/user.schema';
 import { UsersRepository } from './users.repository';
 import { CreateUserDto } from './dto/create-user.dto';
-import TimeService from 'src/common/util/time.service';
 import HashService from 'src/common/util/hash.service';
 import { MagicQueryDto } from 'src/common';
 import { FilterQuery } from 'mongoose';
 import { UpdateUserPasswordDto } from './dto/update-password.dto';
 import { ROLE } from '../role/roles/role.enum';
+import { RolesService } from '../role/roles.service';
 
 @Injectable()
 export class UsersService {
     constructor(
         private readonly usersRepository: UsersRepository,
-        private hashService: HashService,
+        private readonly hashService: HashService,
+        private readonly RoleService: RolesService,
     ) {}
 
     async getUserById(userId: string): Promise<User> {
@@ -88,6 +88,32 @@ export class UsersService {
         const updatedUser = await findUser.save();
 
         return updatedUser;
+    }
+
+    async getUserPermissionsByUserId(userId: string) {
+        const { roles } = await this.usersRepository.findOne(
+            { _id: userId },
+            {
+                lean: true,
+                projection: { roles: 1 },
+                populate: {
+                    path: 'roles',
+                    foreignField: 'name',
+                },
+            },
+        );
+
+        const permissions = [
+            ...new Set(
+                roles
+                    .map((role) => {
+                        return role.permissions;
+                    })
+                    .flat(),
+            ),
+        ];
+
+        return permissions;
     }
 
     async setUserImage(userId: string, image: string): Promise<User> {

@@ -9,41 +9,41 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import ValidateImageTypePipe from 'src/common/pipes/image/validateSingleImageType';
 import ImageInterceptor from 'src/common/interceptors/file-upload/singleImageUpload.interceptor';
-import AdminAuth from 'src/common/decorators/auth/admin-auth.decorator';
 import { USER } from '../auth/types/authUser.types';
 import { UpdateUserPasswordDto } from './dto/update-password.dto';
 import { log } from 'console';
+import { Auth } from 'src/common/decorators/auth/auth.decorator';
+import { UsersPermissionsEnum } from './permissions/permissions.enum';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    //@Auth()
+    @Auth(UsersPermissionsEnum.GET_USER_BY_ID)
     @Get(':id')
     async getUser(@Param('id', ParseMongoIdPipe) userId: string): Promise<User> {
         return await this.usersService.getUserById(userId);
     }
 
-    //@AdminAuth()
+    @Auth(UsersPermissionsEnum.GET_USERS)
     @Get()
     async getUsers(@Query() maigcQuery: MagicQueryDto): Promise<{ data: User[]; count: number }> {
         return await this.usersService.getUsers(maigcQuery);
     }
 
-    //@AdminAuth()
+    @Auth(UsersPermissionsEnum.CREATE_USER)
     @Post()
     async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-        log('hello ')
         return await this.usersService.createUser(createUserDto);
     }
 
-    //@Auth()
+    @Auth(UsersPermissionsEnum.UPDATE_USER_BY_ID)
     @Put()
     async updateUser(@CurrentUser(USER.ID) userId: string, @Body() updateUserDto: UpdateUserDto): Promise<User> {
         return await this.usersService.updateUser(userId, updateUserDto);
     }
 
-    //@Auth()
+    @Auth(UsersPermissionsEnum.UPDATE_USER_BY_ID)
     @Put('update_password')
     async updateUserPassword(
         @CurrentUser(USER.ID) userId: string,
@@ -52,7 +52,7 @@ export class UsersController {
         return await this.usersService.updateUserPassword(userId, updateUserPasswordDto);
     }
 
-    @AdminAuth()
+    @Auth(UsersPermissionsEnum.UPDATE_USER_BY_ID)
     @Put('admin/:id')
     async updateUserAdmin(
         @Param('id', ParseMongoIdPipe) userId: string,
@@ -61,7 +61,7 @@ export class UsersController {
         return await this.usersService.updateUserByAdmin(userId, updateUserByAdminDto);
     }
 
-    @AdminAuth()
+    @Auth(UsersPermissionsEnum.UPDATE_USER_BY_ID)
     @UseInterceptors(FileInterceptor('image', { storage: memoryStorage() }), ImageInterceptor)
     @Put('set_image_admin/:id')
     async setImageAdmin(
@@ -71,7 +71,7 @@ export class UsersController {
         return await this.usersService.setUserImage(userId, file.path);
     }
 
-    //@Auth()
+    @Auth(UsersPermissionsEnum.UPDATE_USER_BY_ID)
     @UseInterceptors(FileInterceptor('image', { storage: memoryStorage() }), ImageInterceptor)
     @Put('set_image/:id')
     async setImage(

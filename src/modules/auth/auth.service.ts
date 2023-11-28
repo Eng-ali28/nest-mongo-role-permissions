@@ -33,7 +33,7 @@ export class AuthService {
         if (findUser) throw new BadRequestException('phoneNumber already exists.');
 
         const code = await this.codeRepository.findActiveCode(data.phoneNumber);
-        if (!code) throw new BadRequestException(' Please confirm your phone number first.');
+        if (!code) throw new BadRequestException('Please confirm your phone number first.');
 
         const user = await this.userRepository.create({
             ...data,
@@ -45,14 +45,14 @@ export class AuthService {
 
         const payload: Payload = {
             userId: user._id,
-            isAdmin: user.isAdmin,
+
             deviceName,
         };
 
         const tokens = await this.getTokens(payload);
 
         await this.updateRefreshToken(user.id, deviceName, tokens.refreshToken);
-        log(tokens)
+        log(tokens);
         return {
             ...userLeanObject,
             accessToken: tokens.accessToken,
@@ -72,7 +72,7 @@ export class AuthService {
 
         const payload: Payload = {
             userId: user._id,
-            isAdmin: user.isAdmin,
+
             deviceName,
         };
 
@@ -104,7 +104,7 @@ export class AuthService {
 
         const payload: Payload = {
             userId: user._id,
-            isAdmin: user.isAdmin,
+
             deviceName,
         };
 
@@ -161,7 +161,7 @@ export class AuthService {
 
         const payload: Payload = {
             userId: user._id,
-            isAdmin: user.isAdmin,
+
             deviceName,
         };
         const tokens = await this.getTokens(payload);

@@ -23,15 +23,6 @@ export class CreateUserDto {
     @Length(2, 64, { message: i18nValidationMessage<I18nTranslations>('validation.LENGTH', {}) })
     lastName: string;
 
-    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
-    @IsString({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
-    @Length(2, 64, { message: i18nValidationMessage<I18nTranslations>('validation.LENGTH', {}) })
-    companyName: string;
-
-    @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
-    @IsISO31661Alpha2({ message: i18nValidationMessage<I18nTranslations>('validation.IS_STRING') })
-    country: string;
-
     @IsPhoneNumber()
     @IsNotEmpty({ message: i18nValidationMessage<I18nTranslations>('validation.NOT_EMPTY') })
     phoneNumber: string;

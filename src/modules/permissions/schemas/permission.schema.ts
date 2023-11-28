@@ -6,8 +6,8 @@ import { Document } from 'mongoose';
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
 })
-export class Permission extends Document {
-    @Prop({ type: String, unique: true })
+export class Permissions extends Document {
+    @Prop({ type: String, index: true, unique: true })
     action: string;
 
     @Prop({ type: String })
@@ -15,7 +15,6 @@ export class Permission extends Document {
 
     @Prop({ type: String })
     subject: string;
-
 }
 
-export const PermissionSchema = SchemaFactory.createForClass(Permission);
+export const PermissionSchema = SchemaFactory.createForClass(Permissions);
